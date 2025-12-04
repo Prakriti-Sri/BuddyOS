@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuddyOS - Student Productivity App</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-page" id="authPage">
+        <button class="theme-toggle-btn auth-theme-toggle" id="authThemeToggleBtn" onclick="toggleTheme()" title="Toggle dark mode">
+            <span id="authThemeIcon">🌙</span>
+        </button>
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-logo">BuddyOS</div>
+                <p class="auth-tagline">Your Personal Study Companion</p>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">Login</button>
+                    <button class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')">Sign Up</button>
+                </div>
+                
+                <form class="auth-form" id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" class="auth-input" placeholder="Enter your email" required>
+                        <span class="error-message" id="loginEmailError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" class="auth-input" placeholder="Enter your password" required>
+                        <span class="error-message" id="loginPasswordError"></span>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="rememberMe">
+                            <span>Remember me</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="auth-btn" id="loginBtn">Login</button>
+                    <p class="auth-link-text">Don't have an account? <a href="#" onclick="switchAuthTab('signup'); return false;">Sign Up</a></p>
+                    <a href="#" class="forgot-password" onclick="alert('Contact support at support@buddyos.com'); return false;">Forgot password?</a>
+                </form>
+                
+                <form class="auth-form hidden" id="signupForm">
+                    <div class="form-group">
+                        <label for="signupFullName">Full Name</label>
+                        <input type="text" id="signupFullName" class="auth-input" placeholder="Enter your full name" required>
+                        <span class="error-message" id="signupFullNameError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email</label>
+                        <input type="email" id="signupEmail" class="auth-input" placeholder="Enter your email" required>
+                        <span class="error-message" id="signupEmailError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" class="auth-input" placeholder="Create a password (min 6 characters)" required>
+                        <span class="error-message" id="signupPasswordError"></span>
+                        <div class="password-strength" id="passwordStrength"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password</label>
+                        <input type="password" id="signupConfirmPassword" class="auth-input" placeholder="Confirm your password" required>
+                        <span class="error-message" id="signupConfirmPasswordError"></span>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="termsCheckbox" required>
+                            <span>I agree to the <a href="#" onclick="alert('Terms of Service: By using BuddyOS, you agree to use the app responsibly for educational purposes.'); return false;">Terms of Service</a></span>
+                        </label>
+                        <span class="error-message" id="termsError"></span>
+                    </div>
+                    <button type="submit" class="auth-btn" id="signupBtn">Sign Up</button>
+                    <p class="auth-link-text">Already have an account? <a href="#" onclick="switchAuthTab('login'); return false;">Login</a></p>
+                </form>
+                
+
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container hidden" id="appContainer">
+        <nav class="navbar">
+            <div class="navbar-logo">BuddyOS</div>
+            <div class="navbar-welcome">Welcome, <span id="userName">User</span></div>
+            <div class="navbar-profile">
+                <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle dark mode">
+                    <span id="themeIcon">🌙</span>
+                </button>
+                <div class="profile-icon" id="profileIcon" onclick="toggleProfileMenu()">U</div>
+                <div class="profile-dropdown hidden" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-user-name" id="dropdownUserName">User</div>
+                        <div class="dropdown-user-email" id="dropdownUserEmail">user@example.com</div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item" onclick="showProfile(); return false;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Profile
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="switchView('settings'); toggleProfileMenu(); return false;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"/>
+                        </svg>
+                        Settings
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item logout-item" onclick="logout(); return false;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="notification-dropdown hidden" id="notificationDropdown">
+            <div class="notification-header">
+                <h3 class="notification-title">Notifications</h3>
+                <button class="notification-close-btn" onclick="toggleNotifications()">&times;</button>
+            </div>
+            <div class="notification-tabs">
+                <button class="notification-tab active" data-tab="all" onclick="switchNotificationTab('all')">All</button>
+                <button class="notification-tab" data-tab="reminders" onclick="switchNotificationTab('reminders')">Reminders</button>
+                <button class="notification-tab" data-tab="achievements" onclick="switchNotificationTab('achievements')">Achievements</button>
+            </div>
+            <div class="notification-list" id="notificationList">
+                <div class="notification-empty">
+                    <div class="empty-icon">🔔</div>
+                    <p>No notifications yet</p>
+                    <small>You'll see notifications here</small>
+                </div>
+            </div>
+            <div class="notification-footer">
+                <button class="notification-clear-btn" onclick="clearAllNotifications()">Clear All</button>
+            </div>
+        </div>
+
+    <div class="dashboard">
+        <div class="panel left-panel">
+            <div class="date-display" id="dateDisplay">Tuesday, April 30</div>
+            <div class="quote-section">
+                <p class="quote-text" id="quoteText">"Success is no accident."</p>
+                <p class="quote-author" id="quoteAuthor">– Pelé</p>
+            </div>
+            <div class="stats-section">
+                <div class="stat-item">
+                    <div class="stat-label">Focus time</div>
+                    <div class="stat-value" id="focusTime">4:25</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Streak</div>
+                    <div class="stat-value" id="streakCount">6</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Senc</div>
+                    <div class="stat-value" id="sessionCount">6</div>
+                </div>
+            </div>
+            <div class="focus-header">Today's focus</div>
+            <div class="navigation-buttons">
+                <button class="nav-btn active" data-view="focus" title="Focus">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                    </svg>
+                    <span>Focus</span>
+                </button>
+                <button class="nav-btn" data-view="notes" title="Notes">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    <span>Notes</span>
+                </button>
+                <button class="nav-btn" data-view="history" title="History">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span>History</span>
+                </button>
+                <button class="nav-btn" data-view="settings" title="Settings">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"/>
+                    </svg>
+                    <span>Settings</span>
+                </button>
+                <button class="nav-btn" data-view="research" title="Research">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                        <path d="M11 8a3 3 0 0 0-3 3"/>
+                    </svg>
+                    <span>Research</span>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="panel center-panel">
+            <div class="view focus-view active" id="focusView">
+                <div class="timer-section">
+                    <h2 class="view-title">Focus</h2>
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+                    <div class="timer-status" id="timerStatus"></div>
+                    <div class="timer-mode-buttons">
+                        <button class="mode-btn" id="shortBreakBtn">Short break</button>
+                        <button class="mode-btn" id="longBreakBtn">Long break</button>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="control-btn start-btn" id="startPauseBtn">Start</button>
+                        <button class="control-btn reset-btn" id="resetBtn">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view notes-view" id="notesView">
+                <h2 class="view-title">All Notes</h2>
+                <div class="notes-list" id="notesListFull"></div>
+                <div id="noteDetailPanel" class="hidden"></div>
+            </div>
+
+            <div class="view history-view" id="historyView">
+                <h2 class="view-title">Session History</h2>
+                <div class="history-stats">
+                    <div class="history-stat">
+                        <div class="history-stat-label">Total Sessions</div>
+                        <div class="history-stat-value" id="totalSessions">6</div>
+                    </div>
+                    <div class="history-stat">
+                        <div class="history-stat-label">Total Time</div>
+                        <div class="history-stat-value" id="totalTime">4:25</div>
+                    </div>
+                    <div class="history-stat">
+                        <div class="history-stat-label">Avg Session</div>
+                        <div class="history-stat-value" id="avgSession">26 min</div>
+                    </div>
+                </div>
+                <div class="history-list" id="historyListFull"></div>
+            </div>
+
+            <div class="view research-view" id="researchView">
+                <div class="research-header">
+                    <h2 class="view-title">Research Dock</h2>
+                    <button class="btn-add-research" id="addResearchBtn">+ Add Research Source</button>
+                </div>
+                
+                <div class="research-controls">
+                    <input type="text" id="researchSearchInput" class="research-search-input" placeholder="Search research sources...">
+                </div>
+                
+                <div class="research-filters">
+                    <button class="filter-btn active" data-filter="all">All (<span id="countAll">0</span>)</button>
+                    <button class="filter-btn" data-filter="book">📖 Books</button>
+                    <button class="filter-btn" data-filter="article">📄 Articles</button>
+                    <button class="filter-btn" data-filter="video">🎥 Videos</button>
+                    <button class="filter-btn" data-filter="website">🌐 Websites</button>
+                    <button class="filter-btn" data-filter="favorites">⭐ Favorites</button>
+                </div>
+                
+                <div class="research-sort">
+                    <label for="researchSort">Sort by:</label>
+                    <select id="researchSort" class="research-sort-select">
+                        <option value="recent">Recently Added</option>
+                        <option value="alphabetical">Alphabetical</option>
+                        <option value="type">By Type</option>
+                        <option value="used">Most Used</option>
+                    </select>
+                </div>
+                
+                <div class="research-main-container">
+                    <div class="research-collections-sidebar">
+                        <h3 class="collections-title">Collections</h3>
+                        <div class="collections-list" id="collectionsList">
+                            <div class="collection-item active" data-collection="all">
+                                <span class="collection-icon">📚</span>
+                                <span class="collection-name">All Sources</span>
+                                <span class="collection-count" id="collectionCountAll">0</span>
+                            </div>
+                            <div class="collection-item" data-collection="favorites">
+                                <span class="collection-icon">⭐</span>
+                                <span class="collection-name">Favorites</span>
+                                <span class="collection-count" id="collectionCountFavorites">0</span>
+                            </div>
+                            <div class="collection-item" data-collection="recent">
+                                <span class="collection-icon">🕒</span>
+                                <span class="collection-name">Recently Added</span>
+                                <span class="collection-count" id="collectionCountRecent">0</span>
+                            </div>
+                        </div>
+                        <button class="btn-add-collection" id="addCollectionBtn">+ New Collection</button>
+                    </div>
+                    
+                    <div class="research-content-area">
+                        <div class="research-stats-bar">
+                            <span id="researchStatsText">0 research sources</span>
+                        </div>
+                        <div class="research-grid" id="researchGrid">
+                        </div>
+                        
+                        <div class="research-empty-state hidden" id="researchEmptyState">
+                            <div class="empty-state-icon">🔬</div>
+                            <h3>No research sources yet!</h3>
+                            <p>Start building your research library by adding sources</p>
+                            <button class="btn-add-research" onclick="openAddResearchModal()">Add First Source</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="view settings-view" id="settingsView">
+                <h2 class="view-title">Settings</h2>
+                <div class="settings-form">
+                    <div class="settings-section">
+                        <h3 class="settings-section-title">Focus Mode Settings</h3>
+                        <div class="settings-group">
+                    <div class="setting-item toggle-item">
+                        <div class="toggle-label-group">
+                            <label for="fullscreenToggle">Enable Fullscreen Mode</label>
+                            <p class="toggle-description">Timer will enter fullscreen when started</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="fullscreenToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item toggle-item">
+                        <div class="toggle-label-group">
+                            <label for="tabDetection">Pause timer on tab switch</label>
+                            <p class="toggle-description">Timer pauses when you leave the tab</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="tabDetection" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h3 class="settings-section-title">Display Settings</h3>
+                        <div class="settings-group">
+                    <div class="setting-item toggle-item">
+                        <div class="toggle-label-group">
+                            <label for="darkModeToggle">Dark Mode</label>
+                            <p class="toggle-description">Switch between light and dark theme</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h3 class="settings-section-title">Timer Duration Settings</h3>
+                        <div class="settings-group">
+                    <div class="setting-item">
+                        <label for="workDuration">Work Duration (minutes)</label>
+                        <input type="number" id="workDuration" min="1" max="60" value="25">
+                    </div>
+                    <div class="setting-item">
+                        <label for="shortBreakDuration">Short Break (minutes)</label>
+                        <input type="number" id="shortBreakDuration" min="1" max="30" value="5">
+                    </div>
+                    <div class="setting-item">
+                        <label for="longBreakDuration">Long Break (minutes)</label>
+                        <input type="number" id="longBreakDuration" min="1" max="60" value="15">
+                    </div>
+                    <div class="setting-item">
+                        <label for="displayName">Display Name</label>
+                        <input type="text" id="displayName" value="Prakriti">
+                    </div>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h3 class="settings-section-title">Notification Settings</h3>
+                        <div class="settings-group">
+                    <div class="setting-item toggle-item">
+                        <div class="toggle-label-group">
+                            <label for="toastNotifications">Toast Notifications</label>
+                            <p class="toggle-description">Show popup notifications on screen</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toastNotifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item toggle-item">
+                        <div class="toggle-label-group">
+                            <label for="browserNotifications">Browser Notifications</label>
+                            <p class="toggle-description">Allow desktop notifications</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="browserNotifications">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item toggle-item">
+                        <div class="toggle-label-group">
+                            <label for="sessionAlerts">Session Alerts</label>
+                            <p class="toggle-description">Notify when sessions start/end</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="sessionAlerts" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item toggle-item">
+                        <div class="toggle-label-group">
+                            <label for="streakAlerts">Streak Alerts</label>
+                            <p class="toggle-description">Remind to maintain your streak</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="streakAlerts" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item toggle-item">
+                        <div class="toggle-label-group">
+                            <label for="quietHours">Enable Quiet Hours</label>
+                            <p class="toggle-description">No notifications during set hours</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="quietHours">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item" id="quietHoursSettings" style="display: none;">
+                        <label>Quiet Hours: From <input type="time" id="quietHoursStart" value="21:00" style="width: 80px; display: inline-block; margin: 0 8px;"> to <input type="time" id="quietHoursEnd" value="08:00" style="width: 80px; display: inline-block; margin: 0 8px;"></label>
+                    </div>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h3 class="settings-section-title">Recurring Reminders</h3>
+                        <div class="settings-group">
+                    <div class="reminders-list" id="remindersList"></div>
+                    <button class="btn-add-reminder" id="addReminderBtn" onclick="openAddReminderModal()">+ Add Reminder</button>
+                        </div>
+                    </div>
+                    <button class="save-settings-btn" id="saveSettingsBtn">Save Settings</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel-container">
+            <div class="panel notes-panel">
+                <div class="app-header">Notes</div>
+                <textarea class="notes-input" id="notesInput" placeholder="Start typing..." autocomplete="off"></textarea>
+<div id="linkSuggestionsContainer"></div>
+                <div class="notes-actions">
+                    <button class="notes-btn save-btn" id="saveNoteBtn">Save</button>
+                    <button class="notes-btn clear-btn" id="clearNoteBtn">Clear</button>
+                </div>
+                <div class="saved-notes" id="savedNotesList"></div>
+            </div>
+
+            <div class="panel timeline-panel">
+                <div class="app-header">Timeline</div>
+                <div class="timeline-list" id="timelineList"></div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <div class="toast hidden" id="toast">
+        <div class="toast-icon" id="toastIcon"></div>
+        <div class="toast-message" id="toastMessage"></div>
+    </div>
+
+    <div class="profile-modal hidden" id="profileModal">
+        <div class="profile-modal-content">
+            <div class="profile-modal-header">
+                <h2>User Profile</h2>
+                <button class="profile-modal-close" onclick="closeProfile()">&times;</button>
+            </div>
+            <div class="profile-modal-body">
+                <div class="profile-info-section">
+                    <div class="profile-avatar-large" id="profileAvatarLarge">U</div>
+                    <h3 id="profileModalName">User Name</h3>
+                    <p id="profileModalEmail">user@example.com</p>
+                </div>
+                <div class="profile-stats-section">
+                    <h4>Account Statistics</h4>
+                    <div class="profile-stat-grid">
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-label">Member Since</div>
+                            <div class="profile-stat-value" id="profileMemberSince">-</div>
+                        </div>
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-label">Total Focus Time</div>
+                            <div class="profile-stat-value" id="profileTotalTime">0:00</div>
+                        </div>
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-label">Sessions Completed</div>
+                            <div class="profile-stat-value" id="profileSessions">0</div>
+                        </div>
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-label">Current Streak</div>
+                            <div class="profile-stat-value" id="profileStreak">0</div>
+                        </div>
+                        <div class="profile-stat-item">
+                            <div class="profile-stat-label">Notes Created</div>
+                            <div class="profile-stat-value" id="profileNotes">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fullscreen-modal" id="pauseModal">
+        <div class="modal-content">
+            <div class="modal-icon">⏸️</div>
+            <h2 class="modal-title">Timer Paused - You Left Focus Mode</h2>
+            <p class="modal-message">It looks like you switched tabs or windows. This breaks your concentration!</p>
+            <p class="modal-motivational" id="modalMotivational">Stay focused! You've got this!</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" id="resumeFullscreenBtn">Resume in Fullscreen</button>
+                <button class="modal-btn modal-btn-secondary" id="resumeWindowedBtn">Continue without Fullscreen</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="fullscreen-timer-view" id="fullscreenTimerView">
+        <div class="fullscreen-content">
+            <div class="fullscreen-session-type" id="fullscreenSessionType">FOCUS SESSION</div>
+            <div class="fullscreen-timer" id="fullscreenTimer">25:00</div>
+            <div class="fullscreen-progress-bar">
+                <div class="fullscreen-progress-fill" id="fullscreenProgressFill"></div>
+            </div>
+            <div class="fullscreen-hint">Press ESC to exit fullscreen</div>
+        </div>
+    </div>
+
+    <div class="celebration-screen" id="celebrationScreen">
+        <div class="celebration-content">
+            <div class="celebration-emoji">🎉</div>
+            <h1 class="celebration-title">Great Job!</h1>
+            <p class="celebration-message" id="celebrationMessage">You completed a 25-minute focus session!</p>
+            <div class="celebration-time" id="celebrationTime">25:00</div>
+            <p class="celebration-motivational">You're making great progress!</p>
+            <div class="celebration-buttons">
+                <button class="celebration-btn celebration-btn-primary" id="nextSessionBtn">Start Next Session</button>
+                <button class="celebration-btn celebration-btn-secondary" id="exitFullscreenBtn">Exit Fullscreen</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="research-modal hidden" id="researchModal">
+        <div class="research-modal-content">
+            <div class="research-modal-header">
+                <h2 id="researchModalTitle">Add Research Source</h2>
+                <button class="research-modal-close" onclick="closeResearchModal()">&times;</button>
+            </div>
+            <div class="research-modal-body">
+                <form id="researchForm">
+                    <div class="form-group">
+                        <label for="researchTitle">Title <span class="required">*</span></label>
+                        <input type="text" id="researchTitle" class="form-control" placeholder="Research title/topic" required>
+                        <span class="error-message" id="titleError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="researchURL">URL</label>
+                        <input type="url" id="researchURL" class="form-control" placeholder="https://example.com">
+                        <span class="error-message" id="urlError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="researchType">Type <span class="required">*</span></label>
+                        <select id="researchType" class="form-control" required>
+                            <option value="">Select type</option>
+                            <option value="book">📖 Book</option>
+                            <option value="article">📄 Article</option>
+                            <option value="video">🎥 Video</option>
+                            <option value="website">🌐 Website</option>
+                            <option value="pdf">📕 PDF</option>
+                            <option value="thesis">🎓 Thesis</option>
+                            <option value="lecture">🎤 Lecture</option>
+                            <option value="other">📚 Other</option>
+                        </select>
+                        <span class="error-message" id="typeError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="researchAuthor">Author/Publisher</label>
+                        <input type="text" id="researchAuthor" class="form-control" placeholder="Author or publisher name">
+                    </div>
+                    <div class="form-group">
+                        <label for="researchNotes">Notes</label>
+                        <textarea id="researchNotes" class="form-control" rows="4" placeholder="Quick notes about this source"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="researchTags">Tags</label>
+                        <input type="text" id="researchTags" class="form-control" placeholder="e.g., math, calculus, formulas (comma-separated)">
+                        <small class="form-hint">Separate tags with commas</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="researchCollection">Collection</label>
+                        <select id="researchCollection" class="form-control">
+                            <option value="">No collection</option>
+                        </select>
+                    </div>
+                    <div class="research-modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeResearchModal()">Cancel</button>
+                        <button type="submit" class="btn-save" id="saveResearchBtn">Add Source</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="research-modal hidden" id="researchDetailModal">
+        <div class="research-modal-content research-detail-content">
+            <div class="research-modal-header">
+                <h2 id="detailTitle">Research Details</h2>
+                <button class="research-modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="research-modal-body" id="researchDetailBody">
+            </div>
+        </div>
+    </div>
+
+    <button class="chat-bubble-btn" id="chatBubbleBtn" onclick="openChat()" title="Chat with Buddy">
+        💬
+    </button>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="chat-title">Buddy - Your Study Assistant</div>
+                <div class="chat-status"><span class="status-dot"></span>Online</div>
+            </div>
+            <button class="chat-close-btn" onclick="closeChat()" title="Close chat">&times;</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-bubble bot">Hey there! 👋 I'm Buddy, your study companion. How can I help you today?</div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ask me anything..." onkeypress="handleChatKeyPress(event)">
+            <button class="chat-send-btn" onclick="sendMessage()" title="Send message">➤</button>
+        </div>
+    </div>
+
+    <div class="reminder-modal hidden" id="reminderModal">
+        <div class="reminder-modal-content">
+            <div class="reminder-icon">⏰</div>
+            <h2 class="reminder-title" id="reminderTitle">Time to Study!</h2>
+            <p class="reminder-message" id="reminderMessage">Start your focus session now</p>
+            <div class="reminder-buttons">
+                <button class="reminder-btn reminder-btn-primary" id="reminderActionBtn" onclick="handleReminderAction()">Start Now</button>
+                <button class="reminder-btn reminder-btn-secondary" onclick="snoozeReminder()">Snooze 5 min</button>
+                <button class="reminder-btn reminder-btn-tertiary" onclick="dismissReminder()">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-reminder-modal hidden" id="addReminderModal">
+        <div class="add-reminder-modal-content">
+            <div class="add-reminder-header">
+                <h2>Add Reminder</h2>
+                <button class="modal-close-btn" onclick="closeAddReminderModal()">&times;</button>
+            </div>
+            <div class="add-reminder-body">
+                <form id="addReminderForm">
+                    <div class="form-group">
+                        <label for="reminderTitleInput">Reminder Title</label>
+                        <input type="text" id="reminderTitleInput" class="form-control" placeholder="e.g., Daily Study Session" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reminderType">Type</label>
+                        <select id="reminderType" class="form-control">
+                            <option value="study">Study Reminder</option>
+                            <option value="break">Break Reminder</option>
+                            <option value="goal">Goal Reminder</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reminderTime">Time</label>
+                        <input type="time" id="reminderTime" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reminderRepeat">Repeat</label>
+                        <select id="reminderRepeat" class="form-control">
+                            <option value="daily">Daily</option>
+                            <option value="weekdays">Weekdays (Mon-Fri)</option>
+                            <option value="weekends">Weekends (Sat-Sun)</option>
+                            <option value="custom">Custom Days</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="customDaysGroup" style="display: none;">
+                        <label>Days of Week</label>
+                        <div class="days-checkboxes">
+                            <label><input type="checkbox" value="0"> Sun</label>
+                            <label><input type="checkbox" value="1"> Mon</label>
+                            <label><input type="checkbox" value="2"> Tue</label>
+                            <label><input type="checkbox" value="3"> Wed</label>
+                            <label><input type="checkbox" value="4"> Thu</label>
+                            <label><input type="checkbox" value="5"> Fri</label>
+                            <label><input type="checkbox" value="6"> Sat</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reminderMessageInput">Custom Message (Optional)</label>
+                        <textarea id="reminderMessageInput" class="form-control" rows="2" placeholder="Add a custom message..."></textarea>
+                    </div>
+                    <div class="add-reminder-actions">
+                        <button type="button" class="btn-cancel" onclick="closeAddReminderModal()">Cancel</button>
+                        <button type="submit" class="btn-save">Save Reminder</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="research-popup-overlay hidden" id="researchPopupOverlay">
+        <div class="research-popup" id="researchPopup">
+            <div class="research-popup-header">
+                <div class="research-popup-title" id="researchPopupTitle">Research Source</div>
+                <div class="research-popup-timer" id="researchPopupTimer">25:00 ⏱️</div>
+                <div class="research-popup-header-buttons">
+                    <button class="popup-header-btn" onclick="closeResearchPopup()" title="Close popup">&times;</button>
+                </div>
+            </div>
+            <div class="research-popup-url-bar">
+                <input type="text" class="research-popup-url" id="researchPopupURL" readonly>
+            </div>
+            <div class="research-popup-content" id="researchPopupContent">
+                <div class="popup-loading" id="popupLoading">
+                    <div class="popup-loading-spinner"></div>
+                    <p>Loading content...</p>
+                </div>
+            </div>
+            <div class="research-popup-footer">
+                <div class="popup-footer-status" id="popupFooterStatus">Opened just now</div>
+                <div class="popup-footer-buttons">
+                    <button class="popup-footer-btn" onclick="openPopupInNewTab()" title="Open in new tab">↗️ Open in New Tab</button>
+                    <button class="popup-footer-btn" onclick="copyPopupURL()" title="Copy URL">📋 Copy URL</button>
+                    <button class="popup-footer-btn" onclick="closeResearchPopup()" title="Close">✕ Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

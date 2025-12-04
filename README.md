@@ -9,10 +9,11 @@ BuddyOS is a browser-based **student productivity workspace** that combines a Po
 - **Research Dock** for saving sources into collections with types and notes.
 - **Timeline/History** of completed focus sessions.
 - Light/dark theme, readable typography, and a clean dashboard layout.
+- Single-page app 
+- Works as a static site (GitHub Pages, Netlify, etc.)
 
 ## Tech Stack
 
 - HTML, CSS, Vanilla JavaScript  
-- Single-page app 
-- Works as a static site (GitHub Pages, Netlify, etc.)
+
 
